@@ -1,4 +1,4 @@
-Batman = require '../../../../lib/dist/batman.node'
+Batman = require '../../batman'
 
 module.exports = class Clunk extends Batman.Object
   constructor: ->

@@ -1,4 +1,4 @@
-Batman = require '../../../../lib/dist/batman.node'
+Batman = require '../../batman'
 
 module.exports = class TestStorageAdapter extends Batman.StorageAdapter
   constructor: ->

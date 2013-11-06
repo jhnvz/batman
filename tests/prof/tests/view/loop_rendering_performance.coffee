@@ -1,10 +1,8 @@
-Batman = require '../../../../lib/dist/batman.node'
+Batman = require '../../batman'
 Watson = require 'watson'
 jsdom = require 'jsdom'
 
 Watson.makeADom()
-
-Batman.Renderer::deferEvery = 0
 
 div = (text) ->
   node = document.createElement('div')

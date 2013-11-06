@@ -1,4 +1,4 @@
-# Batman = require '../../../../lib/dist/batman.node'
+# Batman = require '../../batman'
 # Watson = require 'watson'
 # jsdom = require 'jsdom'
 

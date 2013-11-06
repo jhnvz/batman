@@ -1,4 +1,4 @@
-Batman = require '../../../../lib/dist/batman.node'
+Batman = require '../../batman'
 Watson = require 'watson'
 Random = require '../lib/number_generator.coffee'
 Clunk = require '../lib/clunk.coffee'
@@ -18,8 +18,6 @@ Watson.ensureCommitted '6d132e078e3e07473b538ab157635b8664e2077e', ->
     <span data-bind="obj"></span>
   </div>
   '''
-
-  Batman.Renderer::deferEvery = false
 
   node = document.createElement 'div'
   node.innerHTML = loopSource

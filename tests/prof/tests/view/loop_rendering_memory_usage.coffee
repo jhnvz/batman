@@ -1,4 +1,4 @@
-Batman = require '../../../../lib/dist/batman.node'
+Batman = require '../../batman'
 Watson = require 'watson'
 Random = require '../lib/number_generator.coffee'
 Clunk = require '../lib/clunk.coffee'
@@ -20,7 +20,6 @@ Watson.ensureCommitted '7a418aea67be0b79ce11fd5616bd4627f4e576d9', ->
   </div>
   '''
 
-  Batman.Renderer::deferEvery = false
   if Batman.DOM.IteratorBinding?
     Batman.DOM.IteratorBinding::deferEvery = false
 
