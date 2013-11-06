@@ -2,8 +2,6 @@ Batman = require '../../batman'
 Watson = require 'watson'
 jsdom = require 'jsdom'
 
-Watson.makeADom()
-
 div = (text) ->
   node = document.createElement('div')
   node.innerHTML = text if text?
@@ -14,6 +12,11 @@ getSet = (limit = 1000)->
   set.add(i) for i in [1..limit]
   set
 
+getObjectSet = (limit = 1000)->
+  set = new Batman.Set
+  set.add(Batman(num: i)) for i in [1..limit]
+  set
+
 Watson.benchmark 'IteratorBinding performance', (error, suite) ->
   throw error if error
 
@@ -22,18 +25,21 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
       source = """
         <div data-foreach-item="items"></div>
       """
-      getContext = ->
-        Batman.RenderContext.base.descend {items: getSet(count)}
-      context = getContext()
+      items = null
+
+      do setup = ->
+        items = getSet(count)
 
       suite.add "loop over an array of #{count} items", (deferred) ->
         view = new Batman.View
-          context: context
+          items: items
           html: source
-        view.on 'ready', -> deferred.resolve()
+        view.on 'ready', ->
+          deferred.resolve()
+        view.get('node')
+        view.initializeBindings()
       , {
-        onCycle: ->
-          context = getContext()
+        onCycle: -> setup()
         defer: true
         minSamples: 10
       }
@@ -42,27 +48,22 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
     source = """
       <div data-foreach-item="items"></div>
     """
+    items = null
 
-    items = false
-    context = false
-    setContext = ->
-      set = new Batman.Set
-      set.add(Batman(num: i)) for i in [1..100]
-      items = set.sortedBy('num')
-      context = Batman.RenderContext.base.descend {items}
-
-    setContext()
+    do setup = ->
+      items = getObjectSet(100).sortedBy('num')
 
     suite.add "move one item from the top to the bottom of the set", (deferred) ->
       view = new Batman.View
-        context: context
+        items: items
         html: source
       view.on 'ready', ->
-        items.toArray()[0].set('num', 101)
+        items.get('first').set('num', 101)
         deferred.resolve()
+      view.get('node')
+      view.initializeBindings()
     , {
-      onCycle: ->
-        setContext()
+      onCycle: -> setup()
       defer: true
       minSamples: 10
     }
@@ -71,28 +72,23 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
     source = """
       <div data-foreach-item="items"></div>
     """
+    items = set = null
 
-    set = false
-    context = false
-    boundObject = false
-    setContext = ->
-      set = new Batman.Set
-      set.add(Batman(num: i)) for i in [1..100]
-      boundObject = Batman({items: set.sortedBy('num')})
-      context = Batman.RenderContext.base.descend(boundObject)
-
-    setContext()
+    do setup = ->
+      set = getObjectSet(100)
+      items = set.sortedBy('num')
 
     suite.add "reverse the set", (deferred) ->
       view = new Batman.View
-        context: context
+        items: items
         html: source
       view.on 'ready', ->
-        boundObject.set('items', set.sortedBy('num', 'desc'))
+        @set('items', set.sortedBy('num', 'desc'))
         deferred.resolve()
+      view.get('node')
+      view.initializeBindings()
     , {
-      onCycle: ->
-        setContext()
+      onCycle: -> setup()
       defer: true
       minSamples: 10
     }
