@@ -199,6 +199,16 @@ asyncTest 'it should not fail if the iterator is killed', 1, ->
 
   delay ->
 
+asyncTest 'it should include the index value for each iteration', ->
+  source = '<p data-foreach-object="objects" class="present" data-bind="object" data-bind-id="object_index"></p>'
+  objects = new Batman.Set('foo', 'bar', 'baz')
+
+  helpers.render source, {objects}, (node, view) ->
+    equal $('#0').html(), 'foo'
+    equal $('#1').html(), 'bar'
+    equal $('#2').html(), 'baz'
+    QUnit.start()
+
 asyncTest 'previously observed collections shouldn\'t have any effect if they are replaced', ->
   source = '<p data-foreach-object="objects" class="present" data-bind="object"></p>'
   oldObjects = new Batman.Set('foo', 'bar', 'baz')
