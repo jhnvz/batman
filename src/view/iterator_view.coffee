@@ -7,7 +7,7 @@ class Batman.IteratorView extends Batman.View
     if indexes
       @_insertItem(item, indexes[i]) for item, i in items
     else
-      @_insertItem(item, i) for item, i in items
+      @_insertItem(item) for item in items
     @_finishAppendItems()
 
   removeItems: (items, indexes) ->
@@ -43,12 +43,14 @@ class Batman.IteratorView extends Batman.View
   _insertItem: (item, targetIndex) ->
     iterationView = new @iterationViewClass(node: @prototypeNode.cloneNode(true), parentNode: @fragment)
     iterationView.set(@iteratorName, item)
-    iterationView.set("#{@iteratorName}_index", targetIndex)
+    indexName = "#{@iteratorName}Index"
 
     if targetIndex?
+      iterationView.set(indexName, targetIndex)
       iterationView._targeted = true
       @subviews.insert([iterationView], [targetIndex])
     else
+      iterationView.set(indexName, @subviews.length)
       @subviews.add(iterationView)
 
     iterationView.parentNode = null
