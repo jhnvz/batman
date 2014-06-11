@@ -249,3 +249,67 @@ asyncTest "should select an option with value='' when the data is ''", ->
       equal view.get('current'), ''
       equal node[0].value, ''
       deepEqual getContents(node), ['none', 'foo']
+
+asyncTest "should handle simple optgroups", ->
+  context =
+    selectedName: "bowser"
+    characterTypes: ['hero', 'villain']
+    mario: mario = new Batman.Object(name: 'mario', characterType: 'hero')
+    crono: crono = new Batman.Object(name: 'crono', characterType: 'hero')
+    heros: new Batman.Set(mario, crono).sortedBy('name')
+    wario: wario = new Batman.Object(name: 'wario', characterType: 'villain')
+    bowser: bowser = new Batman.Object(name: 'bowser', characterType: 'villain')
+    villains: new Batman.Set(wario, bowser).sortedBy('name')
+
+  source = '''
+    <select id='characters' data-bind='selectedName'>
+      <optgroup label='Heros'>
+        <option data-bind-class='hero.name' data-foreach-hero='heros' data-bind='hero.name' data-bind-value='hero.name'
+      </optgroup>
+      <optgroup label='Villains'>
+        <option data-bind-class='villian.name' data-foreach-villain='villains' data-bind='villain.name' data-bind-value='villain.name'
+      </optgroup>
+    </select>
+  '''
+
+  helpers.render source, context, (node, view) ->
+    deepEqual getContents(node), ['crono', 'mario', 'bowser', 'wario'], "all items are rendered"
+    deepEqual getSelections(node), [false, false, true, false], "the selection is initialized properly"
+    deepEqual view.get('selectedName'), 'bowser'
+
+    node[0].value = 'crono'
+    helpers.triggerChange node[0]
+
+    delay ->
+      deepEqual getContents(node), ['crono', 'mario', 'bowser', 'wario'], "all items are rendered"
+      deepEqual getSelections(node), [true, false, false, false], "the binding is updated by selection"
+      deepEqual view.get('selectedName'), 'crono'
+
+asyncTest "should handle dynamic optgroups", ->
+  context =
+    selectedName: "bowser"
+    characterTypes: ['hero', 'villain']
+    mario: mario = new Batman.Object(name: 'mario', characterType: 'hero')
+    crono: crono = new Batman.Object(name: 'crono', characterType: 'hero')
+    wario: wario = new Batman.Object(name: 'wario', characterType: 'villain')
+    bowser: bowser = new Batman.Object(name: 'bowser', characterType: 'villain')
+    characters: new Batman.Set(wario, bowser, mario, crono)
+
+  source = '''
+    <select data-bind='selectedName'>
+      <optgroup data-foreach-type='characterTypes' data-bind-label='type'>
+        <option data-foreach-character="characters.indexedBy.characterType[type].sortedBy.name"  data-bind="character.name" data-bind-value="character.name"></option>
+      </optgroup>
+    </select>
+  '''
+
+  helpers.render source, context, (node, view) ->
+    deepEqual getContents(node), ['crono', 'mario', 'bowser', 'wario'], "all items are rendered"
+    deepEqual getSelections(node), [false, false, true, false], "the selection is initialized properly"
+
+    node[0].value = 'crono'
+    helpers.triggerChange node[0]
+
+    delay ->
+      deepEqual getContents(node), ['crono', 'mario', 'bowser', 'wario'], "all items are rendered"
+      deepEqual getSelections(node), [true, false, false, false], "the binding is updated by selection"
