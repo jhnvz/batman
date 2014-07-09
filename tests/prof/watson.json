@@ -4,7 +4,7 @@
       "type": "mysql",
       "user": "root",
       "host": "localhost",
-      "port": 13306,
+      "port": 3306,
       "poolsize": 3,
       "database": "watson"
     }
