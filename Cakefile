@@ -13,6 +13,7 @@ require 'coffee-script'
 option '-w', '--watch',  'continue to watch the files and rebuild them when they change'
 option '-c', '--commit', 'operate on the git index instead of the working tree'
 option '-d', '--dist',   'compile minified versions of the platform dependent code into build/dist (build task only)'
+option '-p', '--prof',    'build into prof/build'
 option '-m', '--compare', 'compare to git refs (stat task only)'
 option '-s', '--coverage', 'run jscoverage during tests and report coverage (test task only)'
 
@@ -31,13 +32,16 @@ pipedExec = do ->
 
 task 'build', 'compile batman.js', (options) ->
   files = glob.sync('./src/**/*')
+  target = if options.prof
+      "tests/prof/build"
+    else "build"
   muffin.run
     files: files
     options: options
     map:
-      'src/batman\.coffee'            : (matches) -> muffin.compileTree(matches[0], 'build/batman.js', options)
-      'src/platform/([^/]+)\.coffee'  : (matches) -> muffin.compileTree(matches[0], "build/batman.#{matches[1]}.js", options) unless matches[1] == 'node'
-      'src/extras/(.+)\.coffee'       : (matches) -> muffin.compileTree(matches[0], "build/extras/#{matches[1]}.js", options)
+      'src/batman\.coffee'            : (matches) -> muffin.compileTree(matches[0], "#{target}/batman.js", options)
+      'src/platform/([^/]+)\.coffee'  : (matches) -> muffin.compileTree(matches[0], "#{target}/batman.#{matches[1]}.js", options) unless matches[1] == 'node'
+      'src/extras/(.+)\.coffee'       : (matches) -> muffin.compileTree(matches[0], "#{target}/extras/#{matches[1]}.js", options)
       'tests/run\.coffee'             : (matches) -> muffin.compileTree(matches[0], 'tests/run.js', options)
 
   if options.dist
