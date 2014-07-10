@@ -36,7 +36,7 @@
     "liquor": "~0.0.0",
     "snockets": "git://github.com/batmanjs/snockets.git#2cb7529491add5795953c7b8c7924f02a2b34c34",
     "karma": "~0.10.9",
-    "karma-qunit": "~0.1.0",
+    "karma-qunit": "0.1.0",
     "karma-script-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
@@ -51,6 +51,7 @@
     "node": "~0.8.0 || ~0.10.0"
   },
   "optionalDependencies": {
-    "watson": "~1.4.0"
+    "watson": "~1.4.0",
+    "jsdom": "0.11.1"
   }
 }

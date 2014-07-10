@@ -14,7 +14,6 @@
 /**
  * Shared
  */
-
 var window = this
   , document = this.document
   , old = this.zest;

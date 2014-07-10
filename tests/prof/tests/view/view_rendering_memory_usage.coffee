@@ -15,7 +15,7 @@ loopSource = '''
 </div>
 '''
 
-Batman.Renderer::deferEvery = false if Batman.Renderer::deferEvery
+# Batman.Renderer::deferEvery = false if Batman.Renderer::deferEvery
 
 Watson.trackMemory 'view memory usage: simple', 400, {step: 10, async: true}, (i, next) ->
   node = document.createElement 'div'
