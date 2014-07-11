@@ -2,11 +2,6 @@ Batman = require '../../batman'
 Watson = require 'watson'
 jsdom = require 'jsdom'
 
-div = (text) ->
-  node = document.createElement('div')
-  node.innerHTML = text if text?
-  node
-
 getSet = (limit = 1000)->
   set = new Batman.Set
   set.add(i) for i in [1..limit]

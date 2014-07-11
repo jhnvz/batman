@@ -15,22 +15,13 @@ loopSource = '''
 </div>
 '''
 
-# Batman.Renderer::deferEvery = false if Batman.Renderer::deferEvery
-
 Watson.trackMemory 'view memory usage: simple', 400, {step: 10, async: true}, (i, next) ->
-  node = document.createElement 'div'
-  node.innerHTML = loopSource
   context = Batman(objects: new Batman.Set([0...50]))
 
   view = new Batman.View
-    contexts: [context]
-    node: node
+    objects: context
+    html: loopSource
+  view.get('node')
+  view.initializeBindings()
 
-  finish = ->
-    Batman.DOM.destroyNode(node)
-    next()
-
-  if view.on?
-    view.on 'ready', finish
-  else
-    view.ready finish
+  view.on 'ready', next

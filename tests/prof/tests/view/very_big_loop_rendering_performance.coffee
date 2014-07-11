@@ -17,13 +17,12 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
   node = false
 
   setContext = (count) ->
-    context = Batman.RenderContext.base.descend {items: getSet(count)}
+    context = {items: getSet(count)}
 
   setNode    = (source) ->
     Batman.DOM.destroyNode(node) if node
     node = document.createElement("div")
     node.innerHTML = source
-    root.appendChild(node)
     node
 
   do ->
@@ -36,34 +35,32 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
     """
 
     suite.add "loop over an array of 200 items with 3 bindings", (deferred) ->
-      view = new Batman.View({context, node, html: source})
+      viewOptions = Batman.mixin({}, context, {html: source})
+      view = new Batman.View(viewOptions)
+      view.get('node')
+      view.initializeBindings()
       view.on 'ready', ->
         deferred.resolve()
     , {
       onCycle: ->
         setContext(200)
-        setNode(source)
       onStart: ->
         setContext(200)
-        setNode(source)
       defer: true
       minSamples: 30
     }
 
     suite.add "loop over an array of 400 items with 3 bindings", (deferred) ->
-      view = new Batman.View
-        context: context
-        node: node
-        html: source
+      view = new Batman.View Batman.mixin({}, context, {html: source})
+      view.get('node')
+      view.initializeBindings()
       view.on 'ready', ->
         deferred.resolve()
     , {
       onCycle: ->
         setContext(400)
-        setNode(source)
       onStart: ->
         setContext(400)
-        setNode(source)
       defer: true
       minSamples: 30
     }
@@ -85,15 +82,15 @@ Watson.benchmark 'IteratorBinding performance', (error, suite) ->
     """
 
     suite.add "loop over an array of 200 items with repaint-y bindings", (deferred) ->
-      view = new Batman.View({context, node, html: source})
+      view = new Batman.View Batman.mixin({}, context, {html: source})
+      view.get('node')
+      view.initializeBindings()
       view.on 'ready', -> deferred.resolve()
     , {
       onCycle: ->
         setContext(200)
-        setNode(source)
       onStart: ->
         setContext(200)
-        setNode(source)
       defer: true
       minSamples: 30
     }

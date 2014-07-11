@@ -27,36 +27,24 @@ Watson.benchmark 'simple view rendering', (error, suite) ->
 
   do ->
     suite.add('simple bindings rendering',((deferred) ->
-      node = document.createElement 'div'
-      node.innerHTML = simpleSource
-      context = Batman(foo: 'bar')
-
       view = new Batman.View
-        contexts: [context]
-        node: node
-      if view.on?
-        view.on 'ready', -> deferred.resolve()
-      else
-        view.ready -> deferred.resolve()
-      return
+        foo: 'bar'
+        html: simpleSource
+      view.get('node')
+      view.initializeBindings()
+      view.on 'ready', -> deferred.resolve()
     ),{
       defer: true
     })
 
   do ->
     suite.add('simple loop rendering', ((deferred) ->
-      node = document.createElement 'div'
-      node.innerHTML = loopSource
-      context = Batman(objects: new Batman.Set([0...100]))
-
       view = new Batman.View
-        contexts: [context]
-        node: node
-      if view.on?
-        view.on 'ready', -> deferred.resolve()
-      else
-        view.ready -> deferred.resolve()
-      return
+        objects: new Batman.Set([0...100])
+        html: loopSource
+      view.get('node')
+      view.initializeBindings()
+      view.on 'ready', -> deferred.resolve()
     ),{
       defer: true
       maxTime: 6
@@ -64,24 +52,17 @@ Watson.benchmark 'simple view rendering', (error, suite) ->
 
   do ->
     suite.add('nested loop rendering', ((deferred) ->
-      node = document.createElement 'div'
-      node.innerHTML = nestedLoopSource
-      context = Batman
+      view = new Batman.View
         keys: ['foo', 'bar', 'baz', 'qux']
         sets: new Batman.Hash
           foo: new Batman.Set([0...100])
           bar: new Batman.Set([0...100])
           baz: new Batman.Set([0...100])
           qux: new Batman.Set([0...100])
-
-      view = new Batman.View
-        contexts: [context]
-        node: node
-      if view.on?
-        view.on 'ready', -> deferred.resolve()
-      else
-        view.ready -> deferred.resolve()
-      return
+        html: nestedLoopSource
+      view.get('node')
+      view.initializeBindings()
+      view.on 'ready', -> deferred.resolve()
     ),{
       maxTime: 10
       defer: true
