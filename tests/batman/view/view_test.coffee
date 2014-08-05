@@ -117,10 +117,11 @@ asyncTest 'die should forget observers and fire destroy', 2, ->
   '''
   node = helpers.render source, {}, (node, view) ->
     view.fire = fireSpy = createSpy()
-    view.forget = forgetSpy = createSpy()
+
+    view.property('foo.bar').clearHandlers = forgetSpy = createSpy()
     view.die()
-    ok fireSpy.called
-    ok forgetSpy.called
+    ok fireSpy.called, 'it fires destroy'
+    ok forgetSpy.called, 'it forgets observers'
     QUnit.start()
 
 test "should copy parent view's filters", ->

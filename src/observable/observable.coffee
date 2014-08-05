@@ -15,6 +15,13 @@ Batman.Observable =
       return properties.getObject(key) or properties.setObject( key, new propertyClass(this, key ) )
     else
       return properties.getString(key) or properties.setString(key, new propertyClass(this, key))
+
+  isolateProperties: ->
+    @_batman.properties?.forEach (key, property) -> property.isolate()
+
+  destroyProperties: ->
+    @_batman.properties?.forEach (key, property) -> property.die()
+
   get: (key) ->
     @property(key).getValue()
   set: (key, val) ->

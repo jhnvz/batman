@@ -66,3 +66,6 @@ Batman.EventEmitter =
 
   isPrevented: (key) ->
     @event(key, false)?.isPrevented()
+
+  removeEvents: ->
+    event.clearHandlers() for _, event of @_batman.events

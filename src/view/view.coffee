@@ -238,6 +238,8 @@ class Batman.View extends Batman.Object
 
     @fireAndCall('destroy')
 
+    @isolateProperties()
+
     @destroyBindings()
     @destroySubviews()
 
@@ -247,11 +249,9 @@ class Batman.View extends Batman.Object
 
     @removeFromSuperview()
 
-    @forget()
-    @_batman.properties?.forEach (key, property) -> property.die()
+    @destroyProperties()
 
-    if @_batman.events
-      event.clearHandlers() for _, event of @_batman.events
+    @removeEvents()
 
     @node = null
     @parentNode = null

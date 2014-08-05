@@ -137,8 +137,9 @@ class Batman.DOM.AbstractBinding extends Batman.Object
       @fire 'dataChange', value, @node
 
   die: ->
+    @isolateProperties()
     @forget()
-    @_batman.properties?.forEach (key, property) -> property.die()
+    @destroyProperties()
 
     @node = null
     @keyPath = null
