@@ -342,7 +342,14 @@ class Batman.Model extends Batman.Object
       return if !encoder.encode || (val = @get(key)) == undefined
 
       if (encodedVal = encoder.encode(val, key, obj, this)) != undefined
-        obj[encoder.as?(key, val, obj, this) ? encoder.as] = encodedVal
+        jsonKey = encoder.as?(key, val, obj, this) ? encoder.as
+
+        nestedAttributesKeys = @constructor._encodesNestedAttributesForKeys
+
+        if nestedAttributesKeys && nestedAttributesKeys.indexOf(key) != -1
+          jsonKey = "#{jsonKey}_attributes"
+
+        obj[jsonKey] = encodedVal
 
     obj
 

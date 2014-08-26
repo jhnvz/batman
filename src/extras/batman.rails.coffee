@@ -56,7 +56,7 @@ RailsModelMixin =
 
   _encodesNestedAttributesForKeys: []
 
-  encodesNestedAttributesFor: (keys...)->
+  encodesNestedAttributesFor: (keys...) ->
     @_encodesNestedAttributesForKeys = @_encodesNestedAttributesForKeys.concat(keys)
 
 Batman.Model.encodeTimestamps = ->
@@ -115,32 +115,6 @@ class Batman.RailsStorage extends Batman.RestStorage
         env.result = record
         env.error = record.get('errors')
         return next()
-    next()
-
-
-  @::before 'create', 'update', (env, next) ->
-    nestedAttributeKeys = env.subject.constructor._encodesNestedAttributesForKeys
-    return next() unless nestedAttributeKeys.length
-
-    # if not serializing as form, the data has already been stringified
-    if @serializeAsForm
-      data = env.options.data
-    else
-      data = JSON.parse(env.options.data)
-
-    if namespace = @recordJsonNamespace(env.subject)
-      recordJSON = data[namespace]
-    else
-      recordJSON = data
-
-    for key in nestedAttributeKeys
-      if recordJSON[key]?
-        attrs = recordJSON["#{key}_attributes"] = recordJSON[key]
-        delete recordJSON[key]
-
-    if !@serializeAsForm
-      env.options.data = JSON.stringify(data)
-
     next()
 
   @::after 'update', @skipIfError (env, next) ->
