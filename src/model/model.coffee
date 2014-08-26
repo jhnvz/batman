@@ -346,7 +346,7 @@ class Batman.Model extends Batman.Object
 
         nestedAttributesKeys = @constructor._encodesNestedAttributesForKeys
 
-        if nestedAttributesKeys && nestedAttributesKeys.indexOf(key) != -1
+        if nestedAttributesKeys && nestedAttributesKeys.indexOf(jsonKey) != -1
           jsonKey = "#{jsonKey}_attributes"
 
         obj[jsonKey] = encodedVal
