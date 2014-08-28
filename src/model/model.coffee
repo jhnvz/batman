@@ -45,15 +45,15 @@ class Batman.Model extends Batman.Object
       @::_batman.encoders.set key, encoderForKey
     return
 
-  @decode: (encoded, decoded) ->
+  @decodeKey: (encoded, decoded) ->
     Batman.initializeObject @prototype
-    decoders = @::_batman.decoders ||= {}
-    decoders[encoded] = decoded
+    decoderKeys = @::_batman.decoderKeys ||= {}
+    decoderKeys[encoded] = decoded
 
   # TODO: Should we deprecate this?
   @encodesNestedAttributesFor: (keys...) ->
     for key in keys
-      @decode key, "#{key}_attributes"
+      @decodeKey key, "#{key}_attributes"
 
   @defaultEncoder:
     encode: (x) -> x
@@ -346,7 +346,7 @@ class Batman.Model extends Batman.Object
     return {} if !encoders or encoders.isEmpty()
 
     obj = {}
-    decoders = @_batman.get('decoders')
+    decoders = @_batman.get('decoderKeys')
 
     # Encode each key into a new object
     encoders.forEach (key, encoder) =>

@@ -5,7 +5,7 @@ class Batman.Association
   constructor: (@model, @label, options = {}) ->
 
     if options.decoderKey?
-      @model.decode @label, options.decoderKey
+      @model.decodeKey @label, options.decoderKey
 
     if options.extend?
       Batman.extend @, options.extend

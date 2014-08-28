@@ -120,8 +120,8 @@ test "decoderKey option registers the encoder and decoder key on the model", ->
   deck = new app.Deck
   card = new app.Card
 
-  deepEqual deck._batman.get('decoders'), { "cards": "cards_attributes" }
-  deepEqual card._batman.get('decoders'), { "deck": "deck_attributes" }
+  deepEqual deck._batman.get('decoderKeys'), { "cards": "cards_attributes" }
+  deepEqual card._batman.get('decoderKeys'), { "deck": "deck_attributes" }
 
 asyncTest "support custom exensions which get applied before accessors or encoders", 2, ->
   namespace = {}

@@ -1,32 +1,29 @@
-test "decode registers the encoder and decoder key", ->
+test "decodeKey registers the encoder and decoder key", ->
   class @Product extends Batman.Model
-    @decode 'product_variations', 'product_variations_attributes'
+    @decodeKey 'product_variations', 'product_variations_attributes'
   class @ProductVariation extends Batman.Model
-    @decode 'properties', 'properties_attributes'
+    @decodeKey 'properties', 'properties_attributes'
 
   product = new @Product
   variation = new @ProductVariation
 
-  deepEqual product._batman.get('decoders'), { 'product_variations': 'product_variations_attributes' }
-  deepEqual variation._batman.get('decoders'), { 'properties': 'properties_attributes' }
+  deepEqual product._batman.get('decoderKeys'), { 'product_variations': 'product_variations_attributes' }
+  deepEqual variation._batman.get('decoderKeys'), { 'properties': 'properties_attributes' }
 
 test 'toJSON replaces encoder keys with decoder keys', ->
   class @Store extends Batman.Model
     @encode 'id', 'name'
-    @hasMany('products', saveInline: true, autoload: false, namespace: @, decoderKey: 'products_attributes')
 
   class @Product extends Batman.Model
     @encode 'id', 'name', 'cost'
     @hasMany 'properties'
-    @decode 'properties', 'properties_attributes'
+    @decodeKey 'properties', 'properties_attributes'
 
   class @Property extends Batman.Model
     @encode 'id', 'name', 'value'
 
-  @Store.hasMany('products', saveInline: true, autoload: false, namespace: @)
-
+  @Store.hasMany('products', saveInline: true, autoload: false, namespace: @, decoderKey: 'products_attributes')
   @Product.hasMany('properties', saveInline: true, autoload: false, namespace: @)
-  @Product.encodesNestedAttributesFor('properties')
 
   store  = new @Store(name: "Goodburger")
   burger = store.get('products').build(name: "The Goodburger")
