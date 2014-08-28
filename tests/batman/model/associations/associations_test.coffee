@@ -108,6 +108,21 @@ test "supports the nestUrl option if the model is persisted ", ->
 
   equal card.url(), 'decks/10/cards/20'
 
+test "decoderKey option registers the encoder and decoder key on the model", ->
+  app = Batman.currentApp = {}
+
+  class app.Deck extends Batman.Model
+    @hasMany 'cards', decoderKey: 'cards_attributes'
+
+  class app.Card extends Batman.Model
+    @belongsTo 'deck', decoderKey: 'deck_attributes'
+
+  deck = new app.Deck
+  card = new app.Card
+
+  deepEqual deck._batman.get('decoders'), { "cards": "cards_attributes" }
+  deepEqual card._batman.get('decoders'), { "deck": "deck_attributes" }
+
 asyncTest "support custom exensions which get applied before accessors or encoders", 2, ->
   namespace = {}
   class namespace.Walmart extends Batman.Model

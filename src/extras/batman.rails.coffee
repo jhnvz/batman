@@ -54,11 +54,6 @@ RailsModelMixin =
       attrs = ['created_at', 'updated_at']
     @encode(attrs..., encode: false, decode: Batman.Encoders.railsDate.decode)
 
-  _encodesNestedAttributesForKeys: []
-
-  encodesNestedAttributesFor: (keys...) ->
-    @_encodesNestedAttributesForKeys = @_encodesNestedAttributesForKeys.concat(keys)
-
 Batman.Model.encodeTimestamps = ->
   Batman.developer.warn("You must use Batman.RailsStorage to use encodeTimestamps. Use it with `@persist(Batman.RailsStorage)` in your model definition.")
   RailsModelMixin.encodeTimestamps.apply(@, arguments)

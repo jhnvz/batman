@@ -4,6 +4,9 @@ class Batman.Association
 
   constructor: (@model, @label, options = {}) ->
 
+    if options.decoderKey?
+      @model.decode @label, options.decoderKey
+
     if options.extend?
       Batman.extend @, options.extend
 
@@ -18,7 +21,7 @@ class Batman.Association
       encode: if @options.saveInline then @encoder() else false
       decode: @decoder()
 
-    @model.encode  @options.encoderKey, encoder
+    @model.encode @options.encoderKey, encoder
 
     # The accessor needs reference to this association object, so curry the association info into
     # the getAccessor, which has the model applied as the context.
